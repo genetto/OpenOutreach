@@ -62,7 +62,7 @@ msg_info "Installing ${APP} inside container ${CTID}"
 pct exec "${CTID}" -- bash -c "
   export LLM_API_KEY='${LLM_API_KEY}'
   export AI_MODEL='${AI_MODEL}'
-  bash <(curl -fsSL https://raw.githubusercontent.com/genetto/OpenOutreach/main/openoutreach-install.sh)
+  bash <(curl -fsSL https://raw.githubusercontent.com/genetto/OpenOutreach/refs/heads/master/openoutreach-install.sh)
 "
 
 msg_ok "${APP} installed in LXC ${CTID}"
