@@ -212,6 +212,43 @@ systemctl start openoutreach-xvfb openoutreach-vnc openoutreach
 msg_ok "OpenOutreach daemon started"
 
 # =============================================================================
+# 11. Update script
+# =============================================================================
+msg_info "Installing openoutreach-update command"
+cat > /usr/local/bin/openoutreach-update <<'EOF'
+#!/usr/bin/env bash
+set -euo pipefail
+INSTALL_DIR="/opt/openoutreach"
+SERVICE_USER="openoutreach"
+PYTHON=".venv/bin/python"
+
+echo "Stopping OpenOutreach..."
+systemctl stop openoutreach
+
+echo "Pulling latest code..."
+git -C "${INSTALL_DIR}" fetch --depth=1 origin master
+git -C "${INSTALL_DIR}" reset --hard origin/master
+chown -R "${SERVICE_USER}:${SERVICE_USER}" "${INSTALL_DIR}"
+
+echo "Updating Python dependencies..."
+cd "${INSTALL_DIR}"
+sudo -u "${SERVICE_USER}" .venv/bin/pip install --quiet --upgrade pip
+sudo -u "${SERVICE_USER}" .venv/bin/pip install --quiet -r requirements/prod.txt
+
+echo "Running migrations..."
+sudo -u "${SERVICE_USER}" "${PYTHON}" manage.py migrate --noinput
+
+echo "Collecting static files..."
+sudo -u "${SERVICE_USER}" "${PYTHON}" manage.py collectstatic --noinput --clear -v 0 2>/dev/null || true
+
+echo "Restarting OpenOutreach..."
+systemctl start openoutreach
+echo "Done. $(systemctl is-active openoutreach)"
+EOF
+chmod +x /usr/local/bin/openoutreach-update
+msg_ok "openoutreach-update installed"
+
+# =============================================================================
 # Done
 # =============================================================================
 IP=$(hostname -I | awk '{print $1}')
