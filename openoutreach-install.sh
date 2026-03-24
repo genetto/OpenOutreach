@@ -55,8 +55,10 @@ msg_ok "Service user ready"
 msg_info "Cloning ${APP} from GitHub"
 if [ -d "${INSTALL_DIR}/.git" ]; then
   msg_warn "Directory exists — pulling latest instead"
-  git -C "${INSTALL_DIR}" pull --ff-only
+  git -C "${INSTALL_DIR}" fetch --depth=1 origin "${BRANCH}"
+  git -C "${INSTALL_DIR}" reset --hard "origin/${BRANCH}"
 else
+  rm -rf "${INSTALL_DIR}"
   git clone --depth=1 --branch "${BRANCH}" "${REPO}" "${INSTALL_DIR}"
 fi
 chown -R "${SERVICE_USER}:${SERVICE_USER}" "${INSTALL_DIR}"
