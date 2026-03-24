@@ -71,7 +71,7 @@ msg_info "Creating Python venv and installing requirements"
 cd "${INSTALL_DIR}"
 sudo -u "${SERVICE_USER}" python3 -m venv .venv
 sudo -u "${SERVICE_USER}" .venv/bin/pip install --quiet --upgrade pip
-sudo -u "${SERVICE_USER}" .venv/bin/pip install --quiet -r requirements/prod.txt
+sudo -u "${SERVICE_USER}" .venv/bin/pip install --quiet -r requirements/production.txt
 msg_ok "Python dependencies installed"
 
 # =============================================================================
@@ -235,7 +235,7 @@ chown -R "${SERVICE_USER}:${SERVICE_USER}" "${INSTALL_DIR}"
 echo "Updating Python dependencies..."
 cd "${INSTALL_DIR}"
 sudo -u "${SERVICE_USER}" .venv/bin/pip install --quiet --upgrade pip
-sudo -u "${SERVICE_USER}" .venv/bin/pip install --quiet -r requirements/prod.txt
+sudo -u "${SERVICE_USER}" .venv/bin/pip install --quiet -r requirements/production.txt
 
 echo "Running migrations..."
 sudo -u "${SERVICE_USER}" "${PYTHON}" manage.py migrate --noinput
