@@ -7,7 +7,7 @@ source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxV
 # =============================================================================
 
 APP="OpenOutreach"
-var_tags="openoutreach"
+var_tags=""
 var_cpu="2"
 var_ram="2048"
 var_disk="8"
